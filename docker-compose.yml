@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: bitnami/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USERNAME}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_DATABASE}
+    volumes:
+      - postgres_data:/bitnami/postgresql
+
+  redis:
+    image: bitnami/redis
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  api:
+    build: .
+    ports:
+      - "3333:3333"
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+  worker:
+    build: .
+    command: node build/worker.cjs
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+volumes:
+  postgres_data:
