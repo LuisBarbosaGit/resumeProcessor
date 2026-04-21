@@ -1,9 +1,11 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { CreateResumeService } from "../services/createResumeService.js";
-import { resumeRepository } from "../repository/resumeRepository.js";
+import { resumeRepository } from "../repositories/resumeRepository.js";
+import { StorageRepository } from "../repositories/storageRepository.js";
 
 const repository = new resumeRepository();
-const createResumeService = new CreateResumeService(repository);
+const storage = new StorageRepository();
+const createResumeService = new CreateResumeService(repository, storage);
 
 export const createResumeController = async (
   request: FastifyRequest,

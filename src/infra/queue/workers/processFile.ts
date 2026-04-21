@@ -1,5 +1,4 @@
 import { queueConnection } from "./../connection.js";
-// src/infra/queue/workers/resumeWorker.ts
 import { Worker } from "bullmq";
 
 export const resumeWorker = new Worker(
@@ -14,13 +13,12 @@ export const resumeWorker = new Worker(
     // 3. gerar embedding
     // 4. salvar no banco
 
-    // simulação:
     await new Promise((r) => setTimeout(r, 10000));
 
     console.log("Finalizado:", resumeId);
   },
   {
     connection: queueConnection,
-    concurrency: 2,
+    concurrency: 1,
   },
 );
