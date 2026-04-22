@@ -13,7 +13,7 @@ export class StorageRepository implements IStorageRepository {
       .from("resumes")
       .upload(path, file.file, {
         contentType: file.mimetype,
-        upsert: false,
+        upsert: true,
         duplex: "half",
       });
 

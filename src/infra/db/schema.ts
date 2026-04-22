@@ -15,7 +15,7 @@ export const resumeStatus = pgEnum("reservation_status", [
 export const resumes = pgTable("resumes", {
   id: uuid("id").defaultRandom().primaryKey(),
   email : varchar("email"),
-  fileUrl: varchar("fileUrl"),
+  filePath: varchar("filePath"),
   status: resumeStatus("status").default("pending").notNull(),
   createdAt: timestamp("created_at", { withTimezone: false })
     .defaultNow()

@@ -3,7 +3,7 @@ import { resumes } from "../../../infra/db/schema.js";
 
 export type createResumeDTO = {
   email: string;
-  fileUrl: string;
+  filePath: string;
 };
 
 type Resume = typeof resumes.$inferSelect;
@@ -20,7 +20,7 @@ export class resumeRepository implements IResumeRepository {
       .insert(resumes)
       .values({
         email: item.email,
-        fileUrl: item.fileUrl,
+        filePath: item.filePath,
       })
       .returning();
 

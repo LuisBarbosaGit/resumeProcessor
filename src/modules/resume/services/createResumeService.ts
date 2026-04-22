@@ -23,23 +23,20 @@ export class CreateResumeService {
 
       const filePath = `${randomId}.pdf`;
 
-      //salva arquivo no storage e obtem publicUrl
       const publicUrl = await this.storage.saveFile(file, filePath);
 
-      //salva metadados no banco
       const metadata = {
         email,
-        fileUrl: publicUrl,
+        filePath: filePath,
       };
 
       const resume = await this.repository.create(metadata);
 
-      //cria job no worker
       await resumeQueue.add(
         "process-resume",
         {
           resumeId: resume.id,
-          fileUrl: metadata.fileUrl,
+          filePath: publicUrl,
         },
         {
           attempts: 2,

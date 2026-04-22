@@ -17,29 +17,5 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
 
-  api:
-    build: .
-    ports:
-      - "3333:3333"
-    depends_on:
-      - postgres
-      - redis
-    env_file:
-      - .env
-
-  worker:
-    build: .
-    command: node build/worker.cjs
-    depends_on:
-      - redis
-      - postgres
-    env_file:
-      - .env
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
-
 volumes:
   postgres_data:

@@ -1,19 +1,20 @@
 import { queueConnection } from "./../connection.js";
 import { Worker } from "bullmq";
+import { PDFParse } from "pdf-parse";
 
 export const resumeWorker = new Worker(
   "resume-processing",
   async (job) => {
     const { resumeId, fileUrl } = job.data;
 
-    console.log("Processando:", resumeId);
+    const parser = new PDFParse({ url: fileUrl });
 
-    // 1. baixar arquivo (S3/MinIO)
-    // 2. extrair texto
+    const textFromPDF = await parser.getText();
+
+    await parser.destroy();
+ 
     // 3. gerar embedding
     // 4. salvar no banco
-
-    await new Promise((r) => setTimeout(r, 10000));
 
     console.log("Finalizado:", resumeId);
   },
