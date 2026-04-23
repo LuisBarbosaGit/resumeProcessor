@@ -9,7 +9,7 @@ const envSchema = z.object({
   DB_PASSWORD: z.string(),
   DB_DATABASE: z.string(),
   SUPABASE_URL: z.string(),
-  SUPABASE_PUBLISHABLE_KEY: z.string(),
+  SUPABASE_SECRET_KEY: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

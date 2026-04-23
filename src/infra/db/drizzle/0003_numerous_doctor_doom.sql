@@ -1,1 +1,0 @@
-ALTER TABLE "resumes" RENAME COLUMN "fileUrl" TO "filePath";

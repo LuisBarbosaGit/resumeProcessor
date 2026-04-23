@@ -4,6 +4,7 @@ import type { IResumeRepository } from "../repositories/resumeRepository.js";
 import { resumeQueue } from "../../../infra/queue/queues.js";
 import { randomUUID } from "crypto";
 import type { IStorageRepository } from "../repositories/storageRepository.js";
+import { EmailAlreadyExists } from "../errors/EmailAlreadyExists.js";
 
 type CreateResumeServiceInput = CreateResumeInput & {
   file: MultipartFile;
@@ -19,11 +20,22 @@ export class CreateResumeService {
       throw new Error("Apenas arquivos PDF sao aceitos");
     }
     try {
-      const randomId = randomUUID();
+      const hasAlreadyUserWithEmail =
+        await this.repository.findUserByEmail(email);
 
-      const filePath = `${randomId}.pdf`;
+      if (hasAlreadyUserWithEmail) {
+        throw new EmailAlreadyExists();
+      }
 
-      const publicUrl = await this.storage.saveFile(file, filePath);
+      const filePath = `${email}.pdf`;
+
+      const timeToUrlExpires = 60 * 60 * 24;
+
+      const publicUrl = await this.storage.saveFile(
+        file,
+        filePath,
+        timeToUrlExpires,
+      );
 
       const metadata = {
         email,
@@ -36,7 +48,7 @@ export class CreateResumeService {
         "process-resume",
         {
           resumeId: resume.id,
-          filePath: publicUrl,
+          fileUrl: publicUrl,
         },
         {
           attempts: 2,

@@ -1,11 +1,11 @@
 {
-  "id": "dbf0c0e8-88bd-4d79-ac16-40d7ab608bbf",
+  "id": "53b67b2f-c9e5-4033-ba23-a9d84652d9d7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.seats": {
-      "name": "seats",
+    "public.resumes": {
+      "name": "resumes",
       "schema": "",
       "columns": {
         "id": {
@@ -15,11 +15,17 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "seatNumber": {
-          "name": "seatNumber",
+        "email": {
+          "name": "email",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "filePath": {
+          "name": "filePath",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "status": {
           "name": "status",
@@ -53,7 +59,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "resumes_email_unique": {
+          "name": "resumes_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

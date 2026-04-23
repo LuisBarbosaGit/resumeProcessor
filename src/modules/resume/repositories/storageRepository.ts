@@ -2,13 +2,17 @@ import type { MultipartFile } from "@fastify/multipart";
 import { supabaseStorage } from "../../../infra/supabase/client.js";
 
 export interface IStorageRepository {
-  saveFile(file: MultipartFile, path: string): Promise<string>;
+  saveFile(
+    file: MultipartFile,
+    path: string,
+    timeToExpires: number,
+  ): Promise<string>;
 }
 
 export class StorageRepository implements IStorageRepository {
   constructor(private readonly repository = supabaseStorage) {}
 
-  async saveFile(file: MultipartFile, path: string) {
+  async saveFile(file: MultipartFile, path: string, timeToExpires: number) {
     const { error } = await this.repository.storage
       .from("resumes")
       .upload(path, file.file, {
@@ -21,10 +25,15 @@ export class StorageRepository implements IStorageRepository {
       throw error;
     }
 
-    const { data: publicUrl } = await this.repository.storage
-      .from("resumes")
-      .getPublicUrl(path);
+    const { data: publicUrl, error: getUrlError } =
+      await this.repository.storage
+        .from("resumes")
+        .createSignedUrl(path, timeToExpires);
 
-    return publicUrl.publicUrl;
+    if (getUrlError) {
+      throw error;
+    }
+
+    return publicUrl.signedUrl;
   }
 }
