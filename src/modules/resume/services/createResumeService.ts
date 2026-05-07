@@ -2,7 +2,6 @@ import type { MultipartFile } from "@fastify/multipart";
 import type { CreateResumeInput } from "../schema.js";
 import type { IResumeRepository } from "../repositories/resumeRepository.js";
 import { resumeQueue } from "../../../infra/queue/queues.js";
-import { randomUUID } from "crypto";
 import type { IStorageRepository } from "../repositories/storageRepository.js";
 import { EmailAlreadyExists } from "../errors/EmailAlreadyExists.js";
 
@@ -15,7 +14,11 @@ export class CreateResumeService {
     private repository: IResumeRepository,
     private storage: IStorageRepository,
   ) {}
-  async execute({ email, file }: CreateResumeServiceInput): Promise<any> {
+  async execute({
+    email,
+    file,
+    jobId,
+  }: CreateResumeServiceInput): Promise<any> {
     if (file.mimetype !== "application/pdf") {
       throw new Error("Apenas arquivos PDF sao aceitos");
     }
@@ -49,9 +52,10 @@ export class CreateResumeService {
         {
           resumeId: resume.id,
           fileUrl: publicUrl,
+          jobId,
         },
         {
-          attempts: 2,
+          attempts: 5,
           removeOnComplete: true,
           removeOnFail: false,
           backoff: {

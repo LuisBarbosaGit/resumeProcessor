@@ -2,6 +2,7 @@ import z from "zod";
 
 export const createResumeInputSchema = z.object({
   email: z.email("Email invalido"),
+  jobId: z.uuid("Job ID invalido"),
 });
 
 export const createResumeResponseSchema = z.object({

@@ -12,6 +12,8 @@ export const resumeStatus = pgEnum("reservation_status", [
   "processed",
 ]);
 
+export const jobStatus = pgEnum("job_status", ["pending", "processed"]);
+
 export const resumes = pgTable("resumes", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: varchar("email").unique(),
@@ -26,4 +28,19 @@ export const resumes = pgTable("resumes", {
   metadata: jsonb(),
 });
 
+export const jobs = pgTable("jobs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: varchar("title").notNull(),
+  status: jobStatus("status").default("pending").notNull(),
+  description: varchar("description").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+});
+
 export type ReservationStatus = (typeof resumeStatus.enumValues)[number];
+
+export type JobStatus = (typeof jobStatus.enumValues)[number];

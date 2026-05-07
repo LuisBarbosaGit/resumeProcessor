@@ -6,6 +6,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { jobRoutes } from "./modules/jobs/routes.js";
 import { resumeRoutes } from "./modules/resume/routes.js";
 
 export const buildApp = async () => {
@@ -22,6 +23,7 @@ export const buildApp = async () => {
 
   app.setSerializerCompiler(serializerCompiler);
 
+  await app.register(jobRoutes);
   await app.register(resumeRoutes);
 
   return app.withTypeProvider<ZodTypeProvider>();

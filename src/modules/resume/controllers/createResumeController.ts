@@ -18,12 +18,13 @@ export const createResumeController = async (
       message: "Arquivo PDF e obrigatorio",
     });
   }
-  const { email } = request.query as { email: string };
+  const { email, jobId } = request.body as { email: string; jobId: string };
 
   try {
     const resume = await createResumeService.execute({
       email,
       file,
+      jobId,
     });
 
     return reply.code(201).send(resume);

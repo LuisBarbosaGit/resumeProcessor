@@ -10,6 +10,7 @@ const envSchema = z.object({
   DB_DATABASE: z.string(),
   SUPABASE_URL: z.string(),
   SUPABASE_SECRET_KEY: z.string(),
+  OPENAI_API_KEY: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

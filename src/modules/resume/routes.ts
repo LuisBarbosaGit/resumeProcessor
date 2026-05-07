@@ -10,7 +10,7 @@ export const resumeRoutes = async (app: FastifyInstance) => {
     "/resumes",
     {
       schema: {
-        querystring: createResumeInputSchema,
+        body: createResumeInputSchema,
         tags: ["resume"],
         summary: "Cria um resume com arquivo PDF",
         consumes: ["multipart/form-data"],
